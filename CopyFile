@@ -1,0 +1,25 @@
+import json
+import shutil
+import os
+
+ent_label_value = json.load(open("label_dic.json"))
+
+visual_news_data = json.load(open("visual_news/origin/data.json"))
+visual_news_data_mapping = {ann["id"]: ann for ann in visual_news_data}
+
+val_data = json.load(open("val_single_7.json"))
+x = 0
+for ann in val_data:
+    x+=1
+    ann_id = ann["id"]
+    caption = ann["caption"]
+    image_path = visual_news_data_mapping[ann_id]["image_path"]
+    oriiamge_path = image_path.replace('.','visual_news/origin',1)
+    image_path = image_path.replace('.','allrealimage/origin',1)
+    d = image_path.split('/')
+    last = d[len(d)-1]
+    mydir = image_path[:-len(last)-1]
+    if not os.path.exists(mydir):
+        os.makedirs(mydir)
+    mydir = mydir + '/' + last
+    shutil.copyfile(oriiamge_path, image_path)
